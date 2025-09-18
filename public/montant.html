@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Combien veux-tu offrir ?</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Combien veux-tu offrir ?</h1>
+            <p>Choisis le montant de ton offrande</p>
+
+            <div class="progress-bar">
+                <div class="progress-step">1</div>
+                <div class="progress-step active">2</div>
+                <div class="progress-step">3</div>
+                <div class="progress-step">4</div>
+                <div class="progress-step">5</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Groupe 2: Montant de l'offrande -->
+            <div class="form-group">
+                <h2>Montant de l'offrande</h2>
+
+                <div id="amount-options-container">
+                    <!-- Les options de montant seront injectées dynamiquement -->
+                </div>
+
+                <div class="custom-amount hidden" id="custom-amount-container">
+                    <label for="custom-amount-input">Montant personnalisé</label>
+                    <input type="number" class="custom-amount-input" id="custom-amount-input" min="2000" step="100">
+                    <div class="amount-hint">Le montant minimum est de 2000 FCFA</div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="btn-back-dates">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+                <button class="btn btn-primary" id="btn-next-amount" disabled>
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Script spécifique à la page des montants
+        document.addEventListener('DOMContentLoaded', function () {
+            const amountOptionsContainer = document.getElementById('amount-options-container');
+            const customAmountContainer = document.getElementById('custom-amount-container');
+            const customAmountInput = document.getElementById('custom-amount-input');
+            const btnNextAmount = document.getElementById('btn-next-amount');
+            const btnBackDates = document.getElementById('btn-back-dates');
+
+            let selectedAmountType = null;
+            let selectedAmount = null;
+
+            // Options de montant par type de messe
+            const amountOptions = {
+                "une-messe": [
+                    { value: 2000, label: "2.000 FCFA" },
+                    { value: 3000, label: "3.000 FCFA" },
+                    { value: 5000, label: "5.000 FCFA" },
+                    { value: 10000, label: "10.000 FCFA" },
+                    { value: "custom", label: "Autre montant" }
+                ],
+                "neuvaine": [
+                    { value: 18000, label: "18.000 FCFA" },
+                    { value: 27000, label: "27.000 FCFA" },
+                    { value: 45000, label: "45.000 FCFA" },
+                    { value: 90000, label: "90.000 FCFA" },
+                    { value: "custom", label: "Autre montant" }
+                ],
+                "trentaine": [
+                    { value: 120000, label: "120.000 FCFA" },
+                    { value: "custom", label: "Autre montant" }
+                ]
+            };
+
+            // Charger les données sauvegardées
+            const savedDates = localStorage.getItem('messeDates');
+            if (savedDates) {
+                const datesData = JSON.parse(savedDates);
+
+                // Afficher les options de montant appropriées
+                displayAmountOptions(datesData.type);
+
+                // Charger le montant sauvegardé s'il existe
+                const savedAmount = localStorage.getItem('messeAmount');
+                if (savedAmount) {
+                    const amountData = JSON.parse(savedAmount);
+
+                    if (amountData.type === 'fixed') {
+                        selectAmountOption(amountData.value);
+                    } else if (amountData.type === 'custom') {
+                        selectCustomAmount(amountData.value);
+                    }
+                }
+            } else {
+                // Rediriger vers la page des dates si aucune donnée n'est disponible
+                window.location.href = 'dates.html';
+            }
+
+            function displayAmountOptions(messeType) {
+                amountOptionsContainer.innerHTML = '';
+
+                if (amountOptions[messeType]) {
+                    amountOptions[messeType].forEach(option => {
+                        const amountOption = document.createElement('div');
+                        amountOption.className = 'amount-option';
+                        amountOption.dataset.value = option.value;
+
+                        amountOption.innerHTML = `
+                            <div class="amount-value">${option.value === 'custom' ? 'Autre' : option.value.toLocaleString()}</div>
+                            <div class="amount-label">${option.label}</div>
+                        `;
+
+                        amountOption.addEventListener('click', function () {
+                            if (option.value === 'custom') {
+                                selectCustomAmount();
+                            } else {
+                                selectAmountOption(option.value);
+                            }
+                        });
+
+                        amountOptionsContainer.appendChild(amountOption);
+                    });
+                }
+            }
+
+            function selectAmountOption(value) {
+                // Désélectionner toutes les options
+                document.querySelectorAll('.amount-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                // Sélectionner l'option choisie
+                const selectedOption = document.querySelector(`.amount-option[data-value="${value}"]`);
+                if (selectedOption) {
+                    selectedOption.classList.add('selected');
+                }
+
+                // Cacher le champ de montant personnalisé
+                customAmountContainer.classList.add('hidden');
+
+                // Mettre à jour les valeurs sélectionnées
+                selectedAmountType = 'fixed';
+                selectedAmount = value;
+
+                // Activer le bouton Suivant
+                btnNextAmount.disabled = false;
+            }
+
+            function selectCustomAmount(value = null) {
+                // Désélectionner toutes les options
+                document.querySelectorAll('.amount-option').forEach(option => {
+                    option.classList.remove('selected');
+                });
+
+                // Sélectionner l'option "Autre"
+                const customOption = document.querySelector('.amount-option[data-value="custom"]');
+                if (customOption) {
+                    customOption.classList.add('selected');
+                }
+
+                // Afficher le champ de montant personnalisé
+                customAmountContainer.classList.remove('hidden');
+
+                // Pré-remplir le champ si une valeur est fournie
+                if (value !== null) {
+                    customAmountInput.value = value;
+                }
+
+                // Mettre à jour les valeurs sélectionnées
+                selectedAmountType = 'custom';
+
+                // Valider le montant saisi
+                validateCustomAmount();
+            }
+
+            function validateCustomAmount() {
+                const value = parseInt(customAmountInput.value);
+
+                if (isNaN(value) || value < 2000) {
+                    btnNextAmount.disabled = true;
+                    selectedAmount = null;
+                } else {
+                    btnNextAmount.disabled = false;
+                    selectedAmount = value;
+                }
+            }
+
+            // Écouter les modifications dans le champ de montant personnalisé
+            customAmountInput.addEventListener('input', validateCustomAmount);
+
+            // Navigation
+            btnBackDates.addEventListener('click', function () {
+                window.location.href = 'dates.html';
+            });
+
+            btnNextAmount.addEventListener('click', function () {
+                // Sauvegarder les données de montant
+                const amountData = {
+                    type: selectedAmountType,
+                    value: selectedAmount
+                };
+
+                localStorage.setItem('messeAmount', JSON.stringify(amountData));
+                window.location.href = 'contacts.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

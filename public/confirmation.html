@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation de Demande</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmation de votre demande</h1>
+            <p>Vérifiez les informations de votre demande de messe</p>
+
+            <div class="progress-bar">
+                <div class="progress-step">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step">3</div>
+                <div class="progress-step">4</div>
+                <div class="progress-step active">5</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Récapitulatif simplifié -->
+            <div class="form-group">
+                <h2>Récapitulatif de votre demande</h2>
+
+                <div class="confirmation-summary" id="confirmation-summary">
+                    <!-- Le récapitulatif sera injecté dynamiquement -->
+                </div>
+
+                <div class="summary-notice">
+                    <i class="fas fa-exclamation-circle"></i> Votre demande sera transmise à la paroisse après
+                    validation du paiement.
+                </div>
+            </div>
+
+            <div class="payment-options">
+                <button class="payment-btn payment-now" id="btn-pay-now">
+                    <i class="fas fa-credit-card"></i> Payer maintenant
+                </button>
+
+                <button class="payment-btn payment-later" id="btn-pay-later">
+                    <i class="fas fa-save"></i> Enregistrer et payer plus tard
+                </button>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="btn-back-contacts">
+                    <i class="fas fa-arrow-left"></i> Modifier la demande
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Script spécifique à la page de confirmation
+        document.addEventListener('DOMContentLoaded', function () {
+            const confirmationSummary = document.getElementById('confirmation-summary');
+            const btnPayNow = document.getElementById('btn-pay-now');
+            const btnPayLater = document.getElementById('btn-pay-later');
+            const btnBackContacts = document.getElementById('btn-back-contacts');
+
+            // Afficher le récapitulatif simplifié
+            displaySimplifiedSummary();
+
+            // Navigation
+            btnBackContacts.addEventListener('click', function () {
+                window.location.href = 'contacts.html';
+            });
+
+            btnPayNow.addEventListener('click', function () {
+                // Simuler un paiement réussi
+                alert('Paiement réussi! Votre demande a été transmise à la paroisse.');
+                // Redirection vers une page de remerciement
+                // window.location.href = 'merci.html';
+            });
+
+            btnPayLater.addEventListener('click', function () {
+                // Simuler l'enregistrement pour paiement ultérieur
+                alert('Votre demande a été enregistrée. Vous pourrez la payer ultérieurement depuis votre espace personnel.');
+                // Redirection vers le tableau de bord
+                // window.location.href = 'tableau-de-bord.html';
+            });
+
+            function displaySimplifiedSummary() {
+                // Récupérer toutes les données du localStorage
+                const intentionText = localStorage.getItem('intentionText') || "Intention non spécifiée";
+                const selectedCategory = localStorage.getItem('selectedCategory');
+                const selectedSubcategory = localStorage.getItem('selectedSubcategory');
+                const savedDates = localStorage.getItem('messeDates');
+                const savedAmount = localStorage.getItem('messeAmount');
+                const savedContacts = localStorage.getItem('messeContacts');
+
+                let summaryHTML = '';
+
+                // Bloc 1: Intention de messe (message principal)
+                summaryHTML += `
+                    <div class="summary-block">
+                        <div class="summary-block-header">
+                            <i class="fas fa-praying-hands"></i>
+                            <h3>Intention de messe</h3>
+                        </div>
+                        <div class="summary-block-content">
+                            <div class="intention-text">${intentionText}</div>
+                `;
+
+                // Ajouter les infos de catégorie et sous-catégorie (moins importantes)
+                if (selectedCategory && categories[selectedCategory]) {
+                    const categoryName = categories[selectedCategory].name;
+                    let subcategoryName = "";
+
+                    if (selectedSubcategory && categories[selectedCategory].subcategories[selectedSubcategory]) {
+                        subcategoryName = categories[selectedCategory].subcategories[selectedSubcategory];
+                    }
+
+                    summaryHTML += `
+                        <div class="category-info">
+                            <span class="category-name">${categoryName}</span>
+                            ${subcategoryName ? `<span class="subcategory-name">› ${subcategoryName}</span>` : ''}
+                        </div>
+                    `;
+                }
+
+                summaryHTML += `</div></div>`; // Fin du bloc intention
+
+                // Bloc 2: Dates et montant
+                summaryHTML += `
+                    <div class="summary-block">
+                        <div class="summary-block-header">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>Détails pratiques</h3>
+                        </div>
+                        <div class="summary-block-content">
+                `;
+
+                // Dates de célébration
+                if (savedDates) {
+                    try {
+                        const datesData = JSON.parse(savedDates);
+
+                        if (datesData.type === 'une-messe' && datesData.dateSingle) {
+                            const date = new Date(datesData.dateSingle).toLocaleDateString('fr-FR', {
+                                weekday: 'long',
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric'
+                            });
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Date de célébration</div>
+                                    <div class="detail-value">${date}</div>
+                                </div>
+                            `;
+                        }
+                        else if (datesData.type === 'neuvaine' && datesData.dateStartNeuvaine && datesData.dateEndNeuvaine) {
+                            const startDate = new Date(datesData.dateStartNeuvaine).toLocaleDateString('fr-FR');
+                            const endDate = new Date(datesData.dateEndNeuvaine).toLocaleDateString('fr-FR');
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Période de célébration</div>
+                                    <div class="detail-value">Du ${startDate} au ${endDate}</div>
+                                </div>
+                            `;
+                        }
+                        else if (datesData.type === 'trentaine' && datesData.dateStartTrentaine && datesData.dateEndTrentaine) {
+                            const startDate = new Date(datesData.dateStartTrentaine).toLocaleDateString('fr-FR');
+                            const endDate = new Date(datesData.dateEndTrentaine).toLocaleDateString('fr-FR');
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Période de célébration</div>
+                                    <div class="detail-value">Du ${startDate} au ${endDate}</div>
+                                </div>
+                            `;
+                        }
+                    } catch (e) {
+                        console.error("Erreur lors de l'analyse des données de dates:", e);
+                    }
+                }
+
+                // Montant de l'offrande
+                if (savedAmount) {
+                    try {
+                        const amountData = JSON.parse(savedAmount);
+                        summaryHTML += `
+                            <div class="detail-item">
+                                <div class="detail-label">Montant de l'offrande</div>
+                                <div class="detail-value">${amountData.value.toLocaleString()} FCFA</div>
+                            </div>
+                        `;
+                    } catch (e) {
+                        console.error("Erreur lors de l'analyse des données de montant:", e);
+                    }
+                }
+
+                summaryHTML += `</div></div>`; // Fin du bloc détails pratiques
+
+                // Bloc 3: Coordonnées du demandeur
+                if (savedContacts) {
+                    try {
+                        const contactsData = JSON.parse(savedContacts);
+                        summaryHTML += `
+                            <div class="summary-block">
+                                <div class="summary-block-header">
+                                    <i class="fas fa-user"></i>
+                                    <h3>Coordonnées du demandeur</h3>
+                                </div>
+                                <div class="summary-block-content">
+                        `;
+
+                        if (contactsData.nom) {
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Nom</div>
+                                    <div class="detail-value">${contactsData.nom}</div>
+                                </div>
+                            `;
+                        }
+
+                        if (contactsData.telephone) {
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Téléphone</div>
+                                    <div class="detail-value">${contactsData.telephone}</div>
+                                </div>
+                            `;
+                        }
+
+                        if (contactsData.email) {
+                            summaryHTML += `
+                                <div class="detail-item">
+                                    <div class="detail-label">Email</div>
+                                    <div class="detail-value">${contactsData.email}</div>
+                                </div>
+                            `;
+                        }
+
+                        summaryHTML += `</div></div>`; // Fin du bloc coordonnées
+                    } catch (e) {
+                        console.error("Erreur lors de l'analyse des données de contact:", e);
+                    }
+                }
+
+                // Afficher le récapitulatif
+                confirmationSummary.innerHTML = summaryHTML;
+
+                // Si aucune donnée n'est trouvée
+                if (!intentionText && !savedDates && !savedAmount && !savedContacts) {
+                    confirmationSummary.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>Aucune donnée de demande trouvée</h3>
+                            <p>Il semble que votre demande n'ait pas été enregistrée correctement.</p>
+                            <button class="btn btn-primary" onclick="window.location.href='index.html'">
+                                Commencer une nouvelle demande
+                            </button>
+                        </div>
+                    `;
+
+                    // Cacher les options de paiement
+                    document.querySelector('.payment-options').style.display = 'none';
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

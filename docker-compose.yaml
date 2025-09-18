@@ -1,0 +1,12 @@
+services:
+  app:
+    build: .
+    container_name: demande-messe
+    restart: unless-stopped
+    ports:
+      - "8085:8085"
+    volumes:
+      - ./public:/app/public
+    environment:
+      - NODE_ENV=development
+      - PORT=8085

@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quand veux-tu la messe ?</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quand veux-tu la messe ?</h1>
+            <p>Choisis le type de célébration et les dates</p>
+
+            <div class="progress-bar">
+                <div class="progress-step">1</div>
+                <div class="progress-step active">2</div>
+                <div class="progress-step">3</div>
+                <div class="progress-step">4</div>
+                <div class="progress-step">5</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Groupe 1: Type de messe et dates -->
+            <div class="form-group">
+                <h2>Type de célébration</h2>
+
+                <div class="option-cards">
+                    <div class="option-card selected" data-option="une-messe">
+                        <div class="option-icon">1</div>
+                        <div class="option-title">Une messe</div>
+                        <div class="option-description">Une messe célébrée à une seule intention</div>
+                    </div>
+
+                    <div class="option-card" data-option="neuvaine">
+                        <div class="option-icon">9</div>
+                        <div class="option-title">Une neuvaine de messes</div>
+                        <div class="option-description">9 messes célébrées sur 9 jours consécutifs</div>
+                    </div>
+
+                    <div class="option-card" data-option="trentaine">
+                        <div class="option-icon">30</div>
+                        <div class="option-title">Un trentain de messes</div>
+                        <div class="option-description">30 messes célébrées sur 30 jours consécutifs</div>
+                    </div>
+                </div>
+
+                <div class="date-selection" id="date-selection-une-messe">
+                    <h3>Choisis la date</h3>
+                    <input type="date" class="date-input" id="date-single">
+                </div>
+
+                <div class="date-selection hidden" id="date-selection-neuvaine">
+                    <h3>Choisis la période</h3>
+                    <div class="date-range">
+                        <div>
+                            <label for="date-start-neuvaine">Date de début</label>
+                            <input type="date" class="date-input" id="date-start-neuvaine">
+                        </div>
+                        <div>
+                            <label for="date-end-neuvaine">Date de fin</label>
+                            <input type="date" class="date-input" id="date-end-neuvaine" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="date-selection hidden" id="date-selection-trentaine">
+                    <h3>Choisis la période</h3>
+                    <div class="date-range">
+                        <div>
+                            <label for="date-start-trentaine">Date de début</label>
+                            <input type="date" class="date-input" id="date-start-trentaine">
+                        </div>
+                        <div>
+                            <label for="date-end-trentaine">Date de fin</label>
+                            <input type="date" class="date-input" id="date-end-trentaine" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" onclick="window.location.href='index.html'">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+                <button class="btn btn-primary" id="btn-next-dates">
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Script spécifique à la page des dates
+        document.addEventListener('DOMContentLoaded', function () {
+            const optionCards = document.querySelectorAll('.option-card');
+            const dateSelectionUneMesse = document.getElementById('date-selection-une-messe');
+            const dateSelectionNeuvaine = document.getElementById('date-selection-neuvaine');
+            const dateSelectionTrentaine = document.getElementById('date-selection-trentaine');
+            const dateStartNeuvaine = document.getElementById('date-start-neuvaine');
+            const dateEndNeuvaine = document.getElementById('date-end-neuvaine');
+            const dateStartTrentaine = document.getElementById('date-start-trentaine');
+            const dateEndTrentaine = document.getElementById('date-end-trentaine');
+            const btnNextDates = document.getElementById('btn-next-dates');
+
+            let selectedOption = 'une-messe';
+
+            // Gestion de la sélection des options
+            optionCards.forEach(card => {
+                card.addEventListener('click', function () {
+                    optionCards.forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    selectedOption = this.dataset.option;
+
+                    // Afficher le bon formulaire de dates
+                    dateSelectionUneMesse.classList.add('hidden');
+                    dateSelectionNeuvaine.classList.add('hidden');
+                    dateSelectionTrentaine.classList.add('hidden');
+
+                    document.getElementById(`date-selection-${selectedOption}`).classList.remove('hidden');
+
+                    updateNextButton();
+                });
+            });
+
+            // Calcul des dates de fin
+            dateStartNeuvaine.addEventListener('change', function () {
+                if (this.value) {
+                    const startDate = new Date(this.value);
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 8); // 9 jours au total (début inclus)
+                    dateEndNeuvaine.value = endDate.toISOString().split('T')[0];
+                } else {
+                    dateEndNeuvaine.value = '';
+                }
+                updateNextButton();
+            });
+
+            dateStartTrentaine.addEventListener('change', function () {
+                if (this.value) {
+                    const startDate = new Date(this.value);
+                    const endDate = new Date(startDate);
+                    endDate.setDate(endDate.getDate() + 29); // 30 jours au total (début inclus)
+                    dateEndTrentaine.value = endDate.toISOString().split('T')[0];
+                } else {
+                    dateEndTrentaine.value = '';
+                }
+                updateNextButton();
+            });
+
+            // Validation de la date unique
+            const dateSingle = document.getElementById('date-single');
+            dateSingle.addEventListener('change', updateNextButton);
+
+            function updateNextButton() {
+                let isValid = false;
+
+                if (selectedOption === 'une-messe') {
+                    isValid = !!dateSingle.value;
+                } else if (selectedOption === 'neuvaine') {
+                    isValid = !!dateStartNeuvaine.value && !!dateEndNeuvaine.value;
+                } else if (selectedOption === 'trentaine') {
+                    isValid = !!dateStartTrentaine.value && !!dateEndTrentaine.value;
+                }
+
+                btnNextDates.disabled = !isValid;
+            }
+
+            // Navigation vers la page suivante
+            btnNextDates.addEventListener('click', function () {
+                // Sauvegarder les données de dates
+                const datesData = {
+                    type: selectedOption,
+                    dateSingle: dateSingle.value,
+                    dateStartNeuvaine: dateStartNeuvaine.value,
+                    dateEndNeuvaine: dateEndNeuvaine.value,
+                    dateStartTrentaine: dateStartTrentaine.value,
+                    dateEndTrentaine: dateEndTrentaine.value
+                };
+
+                localStorage.setItem('messeDates', JSON.stringify(datesData));
+                window.location.href = 'montant.html';
+            });
+
+            // Charger les données sauvegardées si elles existent
+            const savedDates = localStorage.getItem('messeDates');
+            if (savedDates) {
+                const datesData = JSON.parse(savedDates);
+
+                // Sélectionner l'option sauvegardée
+                document.querySelector(`.option-card[data-option="${datesData.type}"]`).click();
+
+                // Remplir les champs de date
+                if (datesData.type === 'une-messe' && datesData.dateSingle) {
+                    dateSingle.value = datesData.dateSingle;
+                } else if (datesData.type === 'neuvaine' && datesData.dateStartNeuvaine) {
+                    dateStartNeuvaine.value = datesData.dateStartNeuvaine;
+                    // Déclencher le calcul de la date de fin
+                    const event = new Event('change');
+                    dateStartNeuvaine.dispatchEvent(event);
+                } else if (datesData.type === 'trentaine' && datesData.dateStartTrentaine) {
+                    dateStartTrentaine.value = datesData.dateStartTrentaine;
+                    // Déclencher le calcul de la date de fin
+                    const event = new Event('change');
+                    dateStartTrentaine.dispatchEvent(event);
+                }
+            }
+        });
+    </script>
+</body>
+
+</html>

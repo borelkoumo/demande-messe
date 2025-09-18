@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Demande de Messe - Rédaction d'Intention</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Quelle est votre intention de prière ?</h1>
+            <p>
+                Choisissez une catégorie et nous vous aiderons à formuler votre
+                intention
+            </p>
+
+            <div class="progress-bar">
+                <div class="progress-step active">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step">3</div>
+                <div class="progress-step">4</div>
+                <div class="progress-step">5</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Étape 1: Sélection de la catégorie -->
+            <div class="step active" id="step-category">
+                <h2>Choisissez une catégorie</h2>
+                <p>
+                    Sélectionnez la catégorie qui correspond le mieux à votre intention
+                </p>
+
+                <!-- Barre de recherche -->
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" class="search-input" id="search-input"
+                        placeholder="Rechercher une intention (défunt, santé, voyage...)" />
+                    <div class="search-results" id="search-results"></div>
+                </div>
+
+                <div class="quick-search-title">Ou parcourir par catégorie</div>
+
+                <div class="categories-grid">
+                    <div class="category-card" data-category="defunt">
+                        <div class="category-icon">⛪</div>
+                        <div class="category-name">Défunts</div>
+                    </div>
+                    <div class="category-card" data-category="sante">
+                        <div class="category-icon">❤️</div>
+                        <div class="category-name">Santé</div>
+                    </div>
+                    <div class="category-card" data-category="famille">
+                        <div class="category-icon">👨‍👩‍👧‍👦</div>
+                        <div class="category-name">Famille</div>
+                    </div>
+                    <div class="category-card" data-category="voyage">
+                        <div class="category-icon">✈️</div>
+                        <div class="category-name">Voyage</div>
+                    </div>
+                    <div class="category-card" data-category="action-de-grace">
+                        <div class="category-icon">🙏</div>
+                        <div class="category-name">Action de grâce</div>
+                    </div>
+                    <div class="category-card" data-category="travail">
+                        <div class="category-icon">💼</div>
+                        <div class="category-name">Travail</div>
+                    </div>
+                    <div class="category-card" data-category="reussite">
+                        <div class="category-icon">🎓</div>
+                        <div class="category-name">Réussite</div>
+                    </div>
+                    <div class="category-card" data-category="spiritualite">
+                        <div class="category-icon">⛪</div>
+                        <div class="category-name">Spiritualité</div>
+                    </div>
+                    <div class="category-card" data-category="monde">
+                        <div class="category-icon">🌍</div>
+                        <div class="category-name">Monde & Société</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" disabled>
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-primary" id="btn-next-category" disabled>
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Étape 2: Sélection de la sous-catégorie -->
+            <div class="step" id="step-subcategory">
+                <h2>Précisez votre intention</h2>
+                <p>Sélectionnez une sous-catégorie pour affiner votre demande</p>
+
+                <div class="selected-category">
+                    <i class="fas fa-folder-open"></i>
+                    <span id="selected-category-name">Catégorie sélectionnée</span>
+                </div>
+
+                <div class="subcategories-grid" id="subcategories-container">
+                    <!-- Les sous-catégories seront injectées dynamiquement -->
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="btn-back-category">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-primary" id="btn-next-subcategory" disabled>
+                        Suivant <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Étape 3: Rédaction de l'intention -->
+            <div class="step" id="step-redaction">
+                <h2>Rédigez votre intention</h2>
+                <p>Nous avons préparé une suggestion que vous pouvez personnaliser</p>
+
+                <div class="selected-category">
+                    <i class="fas fa-folder-open"></i>
+                    <span id="final-category-name">Catégorie > Sous-catégorie</span>
+                </div>
+
+                <div class="input-section">
+                    <div class="input-toggle">
+                        <div class="toggle-option active" id="toggle-ai">
+                            Aide à la rédaction (IA)
+                        </div>
+                        <div class="toggle-option" id="toggle-manual">
+                            Rédiger moi-même
+                        </div>
+                    </div>
+
+                    <div id="ai-assist-section">
+                        <div class="suggestion-box">
+                            <div class="suggestion-header">
+                                <div class="suggestion-title">Suggestion</div>
+                                <button class="regenerate-btn">
+                                    <i class="fas fa-rotate"></i> Régénérer
+                                </button>
+                            </div>
+                            <div class="suggestion-text" id="suggestion-text">
+                                Veuillez sélectionner une sous-catégorie pour générer une
+                                suggestion.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="manual-input-section" style="display: none">
+                        <textarea placeholder="Rédigez votre intention de messe ici..." id="manual-textarea"></textarea>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" id="btn-back-subcategory">
+                        <i class="fas fa-arrow-left"></i> Retour
+                    </button>
+                    <button class="btn btn-primary" id="btn-continue" disabled>
+                        Continuer <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Script spécifique à la page index.html
+        document.addEventListener("DOMContentLoaded", function () {
+            // Éléments DOM
+            const steps = document.querySelectorAll(".step");
+            const categoryCards = document.querySelectorAll(".category-card");
+            const btnNextCategory = document.getElementById("btn-next-category");
+            const btnNextSubcategory = document.getElementById(
+                "btn-next-subcategory"
+            );
+            const btnBackCategory = document.getElementById("btn-back-category");
+            const btnBackSubcategory = document.getElementById(
+                "btn-back-subcategory"
+            );
+            const btnContinue = document.getElementById("btn-continue");
+            const selectedCategoryName = document.getElementById(
+                "selected-category-name"
+            );
+            const finalCategoryName = document.getElementById(
+                "final-category-name"
+            );
+            const subcategoriesContainer = document.getElementById(
+                "subcategories-container"
+            );
+            const toggleAi = document.getElementById("toggle-ai");
+            const toggleManual = document.getElementById("toggle-manual");
+            const aiAssistSection = document.getElementById("ai-assist-section");
+            const manualInputSection = document.getElementById(
+                "manual-input-section"
+            );
+            const regenerateButton = document.querySelector(".regenerate-btn");
+            const suggestionText = document.getElementById("suggestion-text");
+            const manualTextarea = document.getElementById("manual-textarea");
+            const searchInput = document.getElementById("search-input");
+            const searchResults = document.getElementById("search-results");
+
+            // Variables d'état
+            let currentStep = 0;
+            let selectedCategory = null;
+            let selectedSubcategory = null;
+            let toggle = null;
+
+            // Initialisation
+            initApp();
+
+            function initApp() {
+                // Gestion des événements
+                setupEventListeners();
+
+                // Afficher la première étape
+                showStep(0);
+
+                // Charger les données sauvegardées si elles existent
+                const savedCategory = localStorage.getItem("selectedCategory");
+                const savedSubcategory = localStorage.getItem("selectedSubcategory");
+                const savedIntention = localStorage.getItem("intentionText");
+                const toggle = localStorage.getItem("toggle");
+
+                if (savedCategory) {
+                    selectCategory(savedCategory);
+
+                    if (savedSubcategory) {
+                        // Si on a une sous-catégorie, passer à l'étape de rédaction
+                        selectedSubcategory = savedSubcategory;
+                        finalCategoryName.textContent = `${categories[savedCategory].name} > ${categories[savedCategory].subcategories[savedSubcategory]}`;
+
+                        if (savedIntention) {
+                            suggestionText.textContent = savedIntention;
+                            manualTextarea.value = savedIntention;
+                        }
+
+                        showStep(2);
+                    } else {
+                        // Sinon, passer à l'étape de sélection de sous-catégorie
+                        showStep(1);
+                    }
+                }
+
+                if (toggle === "manual") {
+                    toggleManual.click();
+                } else {
+                    toggleAi.click();
+                }
+            }
+
+            function setupEventListeners() {
+                // Navigation entre les étapes
+                btnNextCategory.addEventListener("click", () => showStep(1));
+                btnNextSubcategory.addEventListener("click", () => showStep(2));
+                btnBackCategory.addEventListener("click", () => showStep(0));
+                btnBackSubcategory.addEventListener("click", () => showStep(1));
+
+                // Sélection des catégories
+                categoryCards.forEach((card) => {
+                    card.addEventListener("click", function () {
+                        selectCategory(this.dataset.category);
+                    });
+                });
+
+                // Basculer entre l'aide IA et la rédaction manuelle
+                toggleAi.addEventListener("click", function () {
+                    toggleAi.classList.add("active");
+                    toggleManual.classList.remove("active");
+                    aiAssistSection.style.display = "block";
+                    manualInputSection.style.display = "none";
+                    localStorage.setItem("toggle", "ai");
+                    updateContinueButton();
+                });
+
+                toggleManual.addEventListener("click", function () {
+                    toggleManual.classList.add("active");
+                    toggleAi.classList.remove("active");
+                    manualInputSection.style.display = "block";
+                    aiAssistSection.style.display = "none";
+                    localStorage.setItem("toggle", "manual");
+                    updateContinueButton();
+                });
+
+                // Régénérer une suggestion
+                regenerateButton.addEventListener("click", regenerateSuggestion);
+
+                // Écouter les modifications dans le textarea
+                manualTextarea.addEventListener("input", updateContinueButton);
+
+                // Recherche
+                searchInput.addEventListener("input", handleSearch);
+                searchInput.addEventListener("focus", handleSearch);
+
+                // Navigation vers la page des dates
+                btnContinue.addEventListener("click", function () {
+                    // Sauvegarder l'intention
+                    if (toggleAi.classList.contains("active")) {
+                        localStorage.setItem("intentionText", suggestionText.textContent);
+
+                    } else {
+                        localStorage.setItem("intentionText", manualTextarea.value);
+                    }
+
+                    // Rediriger vers la page des dates
+                    window.location.href = "dates.html";
+                });
+            }
+
+            function showStep(stepIndex) {
+                // Masquer toutes les étapes
+                steps.forEach((step) => step.classList.remove("active"));
+
+                // Afficher l'étape demandée
+                steps[stepIndex].classList.add("active");
+
+                currentStep = stepIndex;
+
+                // Actions spécifiques à chaque étape
+                if (stepIndex === 1 && selectedCategory) {
+                    displaySubcategories();
+                } else if (stepIndex === 2 && selectedSubcategory && toggle === "ai") {
+                    generateSuggestion();
+                }
+            }
+
+            function selectCategory(categoryId) {
+                // Désélectionner toutes les catégories
+                categoryCards.forEach((card) => card.classList.remove("selected"));
+
+                // Sélectionner la catégorie choisie
+                const selectedCard = document.querySelector(
+                    `.category-card[data-category="${categoryId}"]`
+                );
+                selectedCard.classList.add("selected");
+
+                // Mettre à jour la catégorie sélectionnée
+                selectedCategory = categoryId;
+                selectedCategoryName.textContent = categories[categoryId].name;
+                finalCategoryName.textContent = `${categories[categoryId].name} > `;
+
+                // Sauvegarder la sélection
+                localStorage.setItem("selectedCategory", categoryId);
+
+                // Activer le bouton Suivant
+                btnNextCategory.disabled = false;
+            }
+
+            function displaySubcategories() {
+                // Vider le conteneur de sous-catégories
+                subcategoriesContainer.innerHTML = "";
+
+                // Ajouter les sous-catégories correspondantes
+                for (const [id, name] of Object.entries(
+                    categories[selectedCategory].subcategories
+                )) {
+                    const subcategoryCard = document.createElement("div");
+                    subcategoryCard.className = "subcategory-card";
+                    subcategoryCard.dataset.subcategory = id;
+
+                    subcategoryCard.innerHTML = `
+                        <div class="subcategory-icon">${categories[selectedCategory].icon}</div>
+                        <div class="subcategory-name">${name}</div>
+                    `;
+
+                    subcategoryCard.addEventListener("click", function () {
+                        selectSubcategory(this.dataset.subcategory);
+                    });
+
+                    subcategoriesContainer.appendChild(subcategoryCard);
+                }
+
+                if (selectedSubcategory) {
+                    // Si une sous-catégorie est déjà sélectionnée, la sélectionner à nouveau
+                    selectSubcategory(selectedSubcategory);
+                }
+            }
+
+            function selectSubcategory(subcategoryId) {
+                // Désélectionner toutes les sous-catégories
+                const subcategoryCards =
+                    document.querySelectorAll(".subcategory-card");
+                subcategoryCards.forEach((card) => card.classList.remove("selected"));
+
+                // Sélectionner la sous-catégorie choisie
+                const selectedCard = document.querySelector(
+                    `.subcategory-card[data-subcategory="${subcategoryId}"]`
+                );
+
+                if (selectedCard) {
+                    selectedCard.classList.add("selected");
+                }
+
+                // Mettre à jour la sous-catégorie sélectionnée
+                selectedSubcategory = subcategoryId;
+                finalCategoryName.textContent = `${categories[selectedCategory].name} > ${categories[selectedCategory].subcategories[subcategoryId]}`;
+
+                // Sauvegarder la sélection
+                localStorage.setItem("selectedSubcategory", subcategoryId);
+
+                // Activer le bouton Suivant
+                btnNextSubcategory.disabled = false;
+            }
+
+            function generateSuggestion() {
+                if (selectedSubcategory && suggestions[selectedSubcategory]) {
+                    suggestionText.textContent = suggestions[selectedSubcategory];
+                } else {
+                    suggestionText.textContent =
+                        "Pour l'intention de [précisez], que Dieu accorde ses grâces selon sa volonté divine.";
+                }
+
+                // Pré-remplir le textarea manuel avec la suggestion
+                manualTextarea.value = suggestionText.textContent;
+
+                updateContinueButton();
+            }
+
+            function regenerateSuggestion() {
+                if (selectedSubcategory) {
+                    // Animation simple pour simuler le chargement
+                    suggestionText.textContent = "Génération en cours...";
+
+                    // Simuler un délai de génération
+                    setTimeout(() => {
+                        generateSuggestion();
+                    }, 500);
+                }
+            }
+
+            function updateContinueButton() {
+                if (toggleAi.classList.contains("active")) {
+                    btnContinue.disabled = !selectedSubcategory;
+                } else {
+                    btnContinue.disabled = !manualTextarea.value.trim();
+                }
+            }
+
+            function handleSearch() {
+                const query = searchInput.value.toLowerCase().trim();
+
+                if (query.length < 2) {
+                    searchResults.style.display = "none";
+                    return;
+                }
+
+                // Filtrer les résultats
+                const results = searchIndex.filter(
+                    (item) =>
+                        item.name.toLowerCase().includes(query) ||
+                        item.categoryName.toLowerCase().includes(query)
+                );
+
+                displaySearchResults(results);
+            }
+
+            function displaySearchResults(results) {
+                searchResults.innerHTML = "";
+
+                if (results.length === 0) {
+                    const noResult = document.createElement("div");
+                    noResult.className = "search-result-item";
+                    noResult.textContent = "Aucun résultat trouvé";
+                    searchResults.appendChild(noResult);
+                } else {
+                    results.forEach((result) => {
+                        const resultItem = document.createElement("div");
+                        resultItem.className = "search-result-item";
+                        resultItem.innerHTML = `
+                            <div>${result.icon}</div>
+                            <div>${result.name}</div>
+                            <div class="search-result-category">${result.categoryName}</div>
+                        `;
+
+                        resultItem.addEventListener("click", () => {
+                            // Sélectionner directement la sous-catégorie
+                            selectedCategory = result.categoryId;
+                            selectedSubcategory = result.id;
+                            finalCategoryName.textContent = `${result.categoryName} > ${result.name}`;
+
+                            // Sauvegarder les sélections
+                            localStorage.setItem("selectedCategory", result.categoryId);
+                            localStorage.setItem("selectedSubcategory", result.id);
+
+                            // Générer la suggestion
+                            generateSuggestion();
+
+                            // Passer directement à l'étape 3
+                            showStep(2);
+
+                            // Cacher les résultats de recherche
+                            searchResults.style.display = "none";
+                            searchInput.value = "";
+                        });
+
+                        searchResults.appendChild(resultItem);
+                    });
+                }
+
+                searchResults.style.display = "block";
+            }
+        });
+    </script>
+</body>
+
+</html>

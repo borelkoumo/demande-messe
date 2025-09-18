@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vos coordonnées</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Vos coordonnées</h1>
+            <p>Renseigne tes informations de contact</p>
+
+            <div class="progress-bar">
+                <div class="progress-step">1</div>
+                <div class="progress-step">2</div>
+                <div class="progress-step active">3</div>
+                <div class="progress-step">4</div>
+                <div class="progress-step">5</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Groupe 3: Informations de contact -->
+            <div class="form-group">
+                <h2>Vos informations</h2>
+
+                <form class="contact-form" id="contact-form">
+                    <div class="form-row">
+                        <label for="nom">Nom (optionnel)</label>
+                        <input type="text" class="form-input" id="nom" placeholder="Votre nom">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="telephone">Téléphone <span class="required-marker">*</span></label>
+                        <input type="tel" class="form-input" id="telephone" required
+                            placeholder="Votre numéro de téléphone">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="email">Email (optionnel)</label>
+                        <input type="email" class="form-input" id="email" placeholder="Votre adresse email">
+                    </div>
+
+                    <div class="form-row">
+                        <label for="message">Message (optionnel)</label>
+                        <textarea class="form-input" id="message" rows="4"
+                            placeholder="Un message supplémentaire..."></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="btn-back-amount">
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+                <button class="btn btn-primary" id="btn-next-contacts">
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Script spécifique à la page des contacts
+        document.addEventListener('DOMContentLoaded', function () {
+            const contactForm = document.getElementById('contact-form');
+            const telephoneInput = document.getElementById('telephone');
+            const btnNextContacts = document.getElementById('btn-next-contacts');
+            const btnBackAmount = document.getElementById('btn-back-amount');
+
+            // Charger les données sauvegardées si elles existent
+            const savedContacts = localStorage.getItem('messeContacts');
+            if (savedContacts) {
+                const contactsData = JSON.parse(savedContacts);
+
+                document.getElementById('nom').value = contactsData.nom || '';
+                document.getElementById('telephone').value = contactsData.telephone || '';
+                document.getElementById('email').value = contactsData.email || '';
+                document.getElementById('message').value = contactsData.message || '';
+
+                validateForm();
+            }
+
+            // Valider le formulaire
+            function validateForm() {
+                const telephone = telephoneInput.value.trim();
+                btnNextContacts.disabled = !telephone;
+
+                return !btnNextContacts.disabled;
+            }
+
+            // Écouter les modifications dans les champs
+            telephoneInput.addEventListener('input', validateForm);
+
+            // Navigation
+            btnBackAmount.addEventListener('click', function () {
+                window.location.href = 'montant.html';
+            });
+
+            btnNextContacts.addEventListener('click', function () {
+                if (validateForm()) {
+                    // Sauvegarder les données de contact
+                    const contactsData = {
+                        nom: document.getElementById('nom').value,
+                        telephone: document.getElementById('telephone').value,
+                        email: document.getElementById('email').value,
+                        message: document.getElementById('message').value
+                    };
+
+                    localStorage.setItem('messeContacts', JSON.stringify(contactsData));
+                    window.location.href = 'confirmation.html';
+                } else {
+                    alert('Veuillez remplir les champs obligatoires.');
+                }
+            });
+
+            // Valider le format du téléphone
+            telephoneInput.addEventListener('blur', function () {
+                const phone = this.value.trim();
+                if (phone && !/^[\+]?[0-9\s\-\(\)]{8,}$/.test(phone)) {
+                    this.setCustomValidity('Veuillez entrer un numéro de téléphone valide');
+                } else {
+                    this.setCustomValidity('');
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
