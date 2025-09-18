@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="fr">
 
 <head>
@@ -13,10 +13,7 @@
     <div class="container">
         <div class="header">
             <h1>Quelle est votre intention de prière ?</h1>
-            <p>
-                Choisissez une catégorie et nous vous aiderons à formuler votre
-                intention
-            </p>
+            <p>Choisissez une catégorie et nous vous aiderons à formuler votre intention</p>
 
             <div class="progress-bar">
                 <div class="progress-step active">1</div>
@@ -28,18 +25,14 @@
         </div>
 
         <div class="content">
-            <!-- Étape 1: Sélection de la catégorie -->
             <div class="step active" id="step-category">
                 <h2>Choisissez une catégorie</h2>
-                <p>
-                    Sélectionnez la catégorie qui correspond le mieux à votre intention
-                </p>
+                <p>Sélectionnez la catégorie qui correspond le mieux à votre intention</p>
 
-                <!-- Barre de recherche -->
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
                     <input type="text" class="search-input" id="search-input"
-                        placeholder="Rechercher une intention (défunt, santé, voyage...)" />
+                        placeholder="Rechercher une intention (défunt, santé, voyage...)">
                     <div class="search-results" id="search-results"></div>
                 </div>
 
@@ -83,18 +76,8 @@
                         <div class="category-name">Monde & Société</div>
                     </div>
                 </div>
-
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" disabled>
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </button>
-                    <button class="btn btn-primary" id="btn-next-category" disabled>
-                        Suivant <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
             </div>
 
-            <!-- Étape 2: Sélection de la sous-catégorie -->
             <div class="step" id="step-subcategory">
                 <h2>Précisez votre intention</h2>
                 <p>Sélectionnez une sous-catégorie pour affiner votre demande</p>
@@ -104,21 +87,9 @@
                     <span id="selected-category-name">Catégorie sélectionnée</span>
                 </div>
 
-                <div class="subcategories-grid" id="subcategories-container">
-                    <!-- Les sous-catégories seront injectées dynamiquement -->
-                </div>
-
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" id="btn-back-category">
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </button>
-                    <button class="btn btn-primary" id="btn-next-subcategory" disabled>
-                        Suivant <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
+                <div class="subcategories-grid" id="subcategories-container"></div>
             </div>
 
-            <!-- Étape 3: Rédaction de l'intention -->
             <div class="step" id="step-redaction">
                 <h2>Rédigez votre intention</h2>
                 <p>Nous avons préparé une suggestion que vous pouvez personnaliser</p>
@@ -130,12 +101,8 @@
 
                 <div class="input-section">
                     <div class="input-toggle">
-                        <div class="toggle-option active" id="toggle-ai">
-                            Aide à la rédaction (IA)
-                        </div>
-                        <div class="toggle-option" id="toggle-manual">
-                            Rédiger moi-même
-                        </div>
+                        <div class="toggle-option active" id="toggle-ai">Aide à la rédaction (IA)</div>
+                        <div class="toggle-option" id="toggle-manual">Rédiger moi-même</div>
                     </div>
 
                     <div id="ai-assist-section">
@@ -146,94 +113,71 @@
                                     <i class="fas fa-rotate"></i> Régénérer
                                 </button>
                             </div>
-                            <div class="suggestion-text" id="suggestion-text">
-                                Veuillez sélectionner une sous-catégorie pour générer une
-                                suggestion.
-                            </div>
+                            <div class="suggestion-text" id="suggestion-text">Veuillez sélectionner une sous-catégorie
+                                pour générer une suggestion.</div>
                         </div>
                     </div>
 
-                    <div id="manual-input-section" style="display: none">
+                    <div id="manual-input-section" style="display: none;">
                         <textarea placeholder="Rédigez votre intention de messe ici..." id="manual-textarea"></textarea>
                     </div>
                 </div>
+            </div>
 
-                <div class="action-buttons">
-                    <button class="btn btn-secondary" id="btn-back-subcategory">
-                        <i class="fas fa-arrow-left"></i> Retour
-                    </button>
-                    <button class="btn btn-primary" id="btn-continue" disabled>
-                        Continuer <i class="fas fa-arrow-right"></i>
-                    </button>
-                </div>
+            <div class="action-buttons">
+                <button class="btn btn-secondary" id="btn-back-sticky" disabled>
+                    <i class="fas fa-arrow-left"></i> Retour
+                </button>
+                <button class="btn btn-primary" id="btn-next-sticky" disabled>
+                    Suivant <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
     <script>
-        // Script spécifique à la page index.html
-        document.addEventListener("DOMContentLoaded", function () {
-            // Éléments DOM
-            const steps = document.querySelectorAll(".step");
-            const categoryCards = document.querySelectorAll(".category-card");
-            const btnNextCategory = document.getElementById("btn-next-category");
-            const btnNextSubcategory = document.getElementById(
-                "btn-next-subcategory"
-            );
-            const btnBackCategory = document.getElementById("btn-back-category");
-            const btnBackSubcategory = document.getElementById(
-                "btn-back-subcategory"
-            );
-            const btnContinue = document.getElementById("btn-continue");
-            const selectedCategoryName = document.getElementById(
-                "selected-category-name"
-            );
-            const finalCategoryName = document.getElementById(
-                "final-category-name"
-            );
-            const subcategoriesContainer = document.getElementById(
-                "subcategories-container"
-            );
-            const toggleAi = document.getElementById("toggle-ai");
-            const toggleManual = document.getElementById("toggle-manual");
-            const aiAssistSection = document.getElementById("ai-assist-section");
-            const manualInputSection = document.getElementById(
-                "manual-input-section"
-            );
-            const regenerateButton = document.querySelector(".regenerate-btn");
-            const suggestionText = document.getElementById("suggestion-text");
-            const manualTextarea = document.getElementById("manual-textarea");
-            const searchInput = document.getElementById("search-input");
-            const searchResults = document.getElementById("search-results");
+        document.addEventListener('DOMContentLoaded', function () {
+            const steps = document.querySelectorAll('.step');
+            const categoryCards = document.querySelectorAll('.category-card');
+            const btnNextCategory = document.getElementById('btn-next-category');
+            const btnNextSubcategory = document.getElementById('btn-next-subcategory');
+            const btnBackCategory = document.getElementById('btn-back-category');
+            const btnBackSubcategory = document.getElementById('btn-back-subcategory');
+            const btnContinue = document.getElementById('btn-continue');
+            const selectedCategoryName = document.getElementById('selected-category-name');
+            const finalCategoryName = document.getElementById('final-category-name');
+            const subcategoriesContainer = document.getElementById('subcategories-container');
+            const toggleAi = document.getElementById('toggle-ai');
+            const toggleManual = document.getElementById('toggle-manual');
+            const aiAssistSection = document.getElementById('ai-assist-section');
+            const manualInputSection = document.getElementById('manual-input-section');
+            const regenerateButton = document.querySelector('.regenerate-btn');
+            const suggestionText = document.getElementById('suggestion-text');
+            const manualTextarea = document.getElementById('manual-textarea');
+            const searchInput = document.getElementById('search-input');
+            const searchResults = document.getElementById('search-results');
+            const btnBackSticky = document.getElementById('btn-back-sticky');
+            const btnNextSticky = document.getElementById('btn-next-sticky');
 
-            // Variables d'état
             let currentStep = 0;
             let selectedCategory = null;
             let selectedSubcategory = null;
             let toggle = null;
 
-            // Initialisation
-            initApp();
-
             function initApp() {
-                // Gestion des événements
                 setupEventListeners();
-
-                // Afficher la première étape
                 showStep(0);
 
-                // Charger les données sauvegardées si elles existent
-                const savedCategory = localStorage.getItem("selectedCategory");
-                const savedSubcategory = localStorage.getItem("selectedSubcategory");
-                const savedIntention = localStorage.getItem("intentionText");
+                const savedCategory = localStorage.getItem('selectedCategory');
+                const savedSubcategory = localStorage.getItem('selectedSubcategory');
+                const savedIntention = localStorage.getItem('intentionText');
                 const toggle = localStorage.getItem("toggle");
 
                 if (savedCategory) {
                     selectCategory(savedCategory);
 
                     if (savedSubcategory) {
-                        // Si on a une sous-catégorie, passer à l'étape de rédaction
                         selectedSubcategory = savedSubcategory;
                         finalCategoryName.textContent = `${categories[savedCategory].name} > ${categories[savedCategory].subcategories[savedSubcategory]}`;
 
@@ -244,7 +188,6 @@
 
                         showStep(2);
                     } else {
-                        // Sinon, passer à l'étape de sélection de sous-catégorie
                         showStep(1);
                     }
                 }
@@ -254,115 +197,93 @@
                 } else {
                     toggleAi.click();
                 }
+
+                updateStickyButtons();
             }
 
             function setupEventListeners() {
-                // Navigation entre les étapes
-                btnNextCategory.addEventListener("click", () => showStep(1));
-                btnNextSubcategory.addEventListener("click", () => showStep(2));
-                btnBackCategory.addEventListener("click", () => showStep(0));
-                btnBackSubcategory.addEventListener("click", () => showStep(1));
-
-                // Sélection des catégories
-                categoryCards.forEach((card) => {
-                    card.addEventListener("click", function () {
+                categoryCards.forEach(card => {
+                    card.addEventListener('click', function () {
                         selectCategory(this.dataset.category);
                     });
                 });
 
-                // Basculer entre l'aide IA et la rédaction manuelle
-                toggleAi.addEventListener("click", function () {
-                    toggleAi.classList.add("active");
-                    toggleManual.classList.remove("active");
-                    aiAssistSection.style.display = "block";
-                    manualInputSection.style.display = "none";
+                toggleAi.addEventListener('click', function () {
+                    toggleAi.classList.add('active');
+                    toggleManual.classList.remove('active');
+                    aiAssistSection.style.display = 'block';
+                    manualInputSection.style.display = 'none';
                     localStorage.setItem("toggle", "ai");
                     updateContinueButton();
                 });
 
-                toggleManual.addEventListener("click", function () {
-                    toggleManual.classList.add("active");
-                    toggleAi.classList.remove("active");
-                    manualInputSection.style.display = "block";
-                    aiAssistSection.style.display = "none";
+                toggleManual.addEventListener('click', function () {
+                    toggleManual.classList.add('active');
+                    toggleAi.classList.remove('active');
+                    manualInputSection.style.display = 'block';
+                    aiAssistSection.style.display = 'none';
                     localStorage.setItem("toggle", "manual");
                     updateContinueButton();
                 });
 
-                // Régénérer une suggestion
-                regenerateButton.addEventListener("click", regenerateSuggestion);
+                regenerateButton.addEventListener('click', regenerateSuggestion);
+                manualTextarea.addEventListener('input', updateContinueButton);
+                searchInput.addEventListener('input', handleSearch);
+                searchInput.addEventListener('focus', handleSearch);
 
-                // Écouter les modifications dans le textarea
-                manualTextarea.addEventListener("input", updateContinueButton);
-
-                // Recherche
-                searchInput.addEventListener("input", handleSearch);
-                searchInput.addEventListener("focus", handleSearch);
-
-                // Navigation vers la page des dates
-                btnContinue.addEventListener("click", function () {
-                    // Sauvegarder l'intention
-                    if (toggleAi.classList.contains("active")) {
-                        localStorage.setItem("intentionText", suggestionText.textContent);
-
-                    } else {
-                        localStorage.setItem("intentionText", manualTextarea.value);
+                btnNextSticky.addEventListener('click', function () {
+                    if (currentStep === 0) {
+                        showStep(1);
+                    } else if (currentStep === 1) {
+                        showStep(2);
+                    } else if (currentStep === 2) {
+                        localStorage.setItem('intentionText', toggleAi.classList.contains('active') ? suggestionText.textContent : manualTextarea.value);
+                        window.location.href = 'dates.html';
                     }
+                });
 
-                    // Rediriger vers la page des dates
-                    window.location.href = "dates.html";
+                btnBackSticky.addEventListener('click', function () {
+                    if (currentStep === 1) {
+                        showStep(0);
+                    } else if (currentStep === 2) {
+                        showStep(1);
+                    }
                 });
             }
 
             function showStep(stepIndex) {
-                // Masquer toutes les étapes
-                steps.forEach((step) => step.classList.remove("active"));
-
-                // Afficher l'étape demandée
-                steps[stepIndex].classList.add("active");
-
+                steps.forEach(step => step.classList.remove('active'));
+                steps[stepIndex].classList.add('active');
                 currentStep = stepIndex;
 
-                // Actions spécifiques à chaque étape
                 if (stepIndex === 1 && selectedCategory) {
                     displaySubcategories();
                 } else if (stepIndex === 2 && selectedSubcategory && toggle === "ai") {
                     generateSuggestion();
                 }
+
+                updateStickyButtons();
             }
 
             function selectCategory(categoryId) {
-                // Désélectionner toutes les catégories
-                categoryCards.forEach((card) => card.classList.remove("selected"));
+                categoryCards.forEach(card => card.classList.remove('selected'));
+                const selectedCard = document.querySelector(`.category-card[data-category="${categoryId}"]`);
+                selectedCard.classList.add('selected');
 
-                // Sélectionner la catégorie choisie
-                const selectedCard = document.querySelector(
-                    `.category-card[data-category="${categoryId}"]`
-                );
-                selectedCard.classList.add("selected");
-
-                // Mettre à jour la catégorie sélectionnée
                 selectedCategory = categoryId;
                 selectedCategoryName.textContent = categories[categoryId].name;
                 finalCategoryName.textContent = `${categories[categoryId].name} > `;
 
-                // Sauvegarder la sélection
-                localStorage.setItem("selectedCategory", categoryId);
-
-                // Activer le bouton Suivant
-                btnNextCategory.disabled = false;
+                localStorage.setItem('selectedCategory', categoryId);
+                btnNextSticky.disabled = false;
             }
 
             function displaySubcategories() {
-                // Vider le conteneur de sous-catégories
-                subcategoriesContainer.innerHTML = "";
+                subcategoriesContainer.innerHTML = '';
 
-                // Ajouter les sous-catégories correspondantes
-                for (const [id, name] of Object.entries(
-                    categories[selectedCategory].subcategories
-                )) {
-                    const subcategoryCard = document.createElement("div");
-                    subcategoryCard.className = "subcategory-card";
+                for (const [id, name] of Object.entries(categories[selectedCategory].subcategories)) {
+                    const subcategoryCard = document.createElement('div');
+                    subcategoryCard.className = 'subcategory-card';
                     subcategoryCard.dataset.subcategory = id;
 
                     subcategoryCard.innerHTML = `
@@ -370,7 +291,7 @@
                         <div class="subcategory-name">${name}</div>
                     `;
 
-                    subcategoryCard.addEventListener("click", function () {
+                    subcategoryCard.addEventListener('click', function () {
                         selectSubcategory(this.dataset.subcategory);
                     });
 
@@ -384,51 +305,37 @@
             }
 
             function selectSubcategory(subcategoryId) {
-                // Désélectionner toutes les sous-catégories
-                const subcategoryCards =
-                    document.querySelectorAll(".subcategory-card");
-                subcategoryCards.forEach((card) => card.classList.remove("selected"));
+                const subcategoryCards = document.querySelectorAll('.subcategory-card');
+                subcategoryCards.forEach(card => card.classList.remove('selected'));
 
-                // Sélectionner la sous-catégorie choisie
-                const selectedCard = document.querySelector(
-                    `.subcategory-card[data-subcategory="${subcategoryId}"]`
-                );
+                const selectedCard = document.querySelector(`.subcategory-card[data-subcategory="${subcategoryId}"]`);
 
                 if (selectedCard) {
                     selectedCard.classList.add("selected");
                 }
 
-                // Mettre à jour la sous-catégorie sélectionnée
                 selectedSubcategory = subcategoryId;
                 finalCategoryName.textContent = `${categories[selectedCategory].name} > ${categories[selectedCategory].subcategories[subcategoryId]}`;
 
-                // Sauvegarder la sélection
-                localStorage.setItem("selectedSubcategory", subcategoryId);
-
-                // Activer le bouton Suivant
-                btnNextSubcategory.disabled = false;
+                localStorage.setItem('selectedSubcategory', subcategoryId);
+                btnNextSticky.disabled = false;
             }
 
             function generateSuggestion() {
                 if (selectedSubcategory && suggestions[selectedSubcategory]) {
                     suggestionText.textContent = suggestions[selectedSubcategory];
                 } else {
-                    suggestionText.textContent =
-                        "Pour l'intention de [précisez], que Dieu accorde ses grâces selon sa volonté divine.";
+                    suggestionText.textContent = "Pour l'intention de [précisez], que Dieu accorde ses grâces selon sa volonté divine.";
                 }
 
-                // Pré-remplir le textarea manuel avec la suggestion
                 manualTextarea.value = suggestionText.textContent;
-
                 updateContinueButton();
             }
 
             function regenerateSuggestion() {
                 if (selectedSubcategory) {
-                    // Animation simple pour simuler le chargement
                     suggestionText.textContent = "Génération en cours...";
 
-                    // Simuler un délai de génération
                     setTimeout(() => {
                         generateSuggestion();
                     }, 500);
@@ -436,10 +343,19 @@
             }
 
             function updateContinueButton() {
-                if (toggleAi.classList.contains("active")) {
-                    btnContinue.disabled = !selectedSubcategory;
-                } else {
-                    btnContinue.disabled = !manualTextarea.value.trim();
+                btnNextSticky.disabled = !(currentStep === 2 ? (toggleAi.classList.contains('active') ? selectedSubcategory : manualTextarea.value.trim()) : true);
+            }
+
+            function updateStickyButtons() {
+                btnBackSticky.disabled = currentStep === 0;
+                btnBackSticky.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+
+                if (currentStep === 0) {
+                    btnNextSticky.disabled = !selectedCategory;
+                } else if (currentStep === 1) {
+                    btnNextSticky.disabled = !selectedSubcategory;
+                } else if (currentStep === 2) {
+                    updateContinueButton();
                 }
             }
 
@@ -447,65 +363,59 @@
                 const query = searchInput.value.toLowerCase().trim();
 
                 if (query.length < 2) {
-                    searchResults.style.display = "none";
+                    searchResults.style.display = 'none';
                     return;
                 }
 
-                // Filtrer les résultats
-                const results = searchIndex.filter(
-                    (item) =>
-                        item.name.toLowerCase().includes(query) ||
-                        item.categoryName.toLowerCase().includes(query)
+                const results = searchIndex.filter(item =>
+                    item.name.toLowerCase().includes(query) ||
+                    item.categoryName.toLowerCase().includes(query)
                 );
 
                 displaySearchResults(results);
             }
 
             function displaySearchResults(results) {
-                searchResults.innerHTML = "";
+                searchResults.innerHTML = '';
 
                 if (results.length === 0) {
-                    const noResult = document.createElement("div");
-                    noResult.className = "search-result-item";
-                    noResult.textContent = "Aucun résultat trouvé";
+                    const noResult = document.createElement('div');
+                    noResult.className = 'search-result-item';
+                    noResult.textContent = 'Aucun résultat trouvé';
                     searchResults.appendChild(noResult);
                 } else {
-                    results.forEach((result) => {
-                        const resultItem = document.createElement("div");
-                        resultItem.className = "search-result-item";
+                    results.forEach(result => {
+                        const resultItem = document.createElement('div');
+                        resultItem.className = 'search-result-item';
                         resultItem.innerHTML = `
                             <div>${result.icon}</div>
                             <div>${result.name}</div>
                             <div class="search-result-category">${result.categoryName}</div>
                         `;
 
-                        resultItem.addEventListener("click", () => {
-                            // Sélectionner directement la sous-catégorie
+                        resultItem.addEventListener('click', () => {
                             selectedCategory = result.categoryId;
                             selectedSubcategory = result.id;
                             finalCategoryName.textContent = `${result.categoryName} > ${result.name}`;
 
-                            // Sauvegarder les sélections
-                            localStorage.setItem("selectedCategory", result.categoryId);
-                            localStorage.setItem("selectedSubcategory", result.id);
+                            localStorage.setItem('selectedCategory', result.categoryId);
+                            localStorage.setItem('selectedSubcategory', result.id);
 
-                            // Générer la suggestion
                             generateSuggestion();
-
-                            // Passer directement à l'étape 3
                             showStep(2);
 
-                            // Cacher les résultats de recherche
-                            searchResults.style.display = "none";
-                            searchInput.value = "";
+                            searchResults.style.display = 'none';
+                            searchInput.value = '';
                         });
 
                         searchResults.appendChild(resultItem);
                     });
                 }
 
-                searchResults.style.display = "block";
+                searchResults.style.display = 'block';
             }
+
+            initApp();
         });
     </script>
 </body>

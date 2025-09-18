@@ -39,19 +39,12 @@
                 </div>
             </div>
 
-            <div class="payment-options">
-                <button class="payment-btn payment-now" id="btn-pay-now">
-                    <i class="fas fa-credit-card"></i> Payer maintenant
-                </button>
-
-                <button class="payment-btn payment-later" id="btn-pay-later">
-                    <i class="fas fa-save"></i> Enregistrer et payer plus tard
-                </button>
-            </div>
-
             <div class="action-buttons">
                 <button class="btn btn-secondary" id="btn-back-contacts">
                     <i class="fas fa-arrow-left"></i> Modifier la demande
+                </button>
+                <button class="btn btn-primary" id="btn-pay-now-action">
+                    <i class="fas fa-credit-card"></i> Payer maintenant
                 </button>
             </div>
         </div>
@@ -63,7 +56,7 @@
         document.addEventListener('DOMContentLoaded', function () {
             const confirmationSummary = document.getElementById('confirmation-summary');
             const btnPayNow = document.getElementById('btn-pay-now');
-            const btnPayLater = document.getElementById('btn-pay-later');
+            const btnPayNowAction = document.getElementById('btn-pay-now-action');
             const btnBackContacts = document.getElementById('btn-back-contacts');
 
             // Afficher le récapitulatif simplifié
@@ -74,19 +67,17 @@
                 window.location.href = 'contacts.html';
             });
 
-            btnPayNow.addEventListener('click', function () {
+            function handlePayNow() {
                 // Simuler un paiement réussi
                 alert('Paiement réussi! Votre demande a été transmise à la paroisse.');
                 // Redirection vers une page de remerciement
                 // window.location.href = 'merci.html';
-            });
+            }
 
-            btnPayLater.addEventListener('click', function () {
-                // Simuler l'enregistrement pour paiement ultérieur
-                alert('Votre demande a été enregistrée. Vous pourrez la payer ultérieurement depuis votre espace personnel.');
-                // Redirection vers le tableau de bord
-                // window.location.href = 'tableau-de-bord.html';
-            });
+            btnPayNow.addEventListener('click', handlePayNow);
+            if (btnPayNowAction) {
+                btnPayNowAction.addEventListener('click', handlePayNow);
+            }
 
             function displaySimplifiedSummary() {
                 // Récupérer toutes les données du localStorage
@@ -261,9 +252,6 @@
                             </button>
                         </div>
                     `;
-
-                    // Cacher les options de paiement
-                    document.querySelector('.payment-options').style.display = 'none';
                 }
             }
         });
