@@ -843,6 +843,8 @@ label {
     }
 
     .action-buttons {
+        position: unset;
+        margin-top: 25px;
         padding: 12px;
     }
 
