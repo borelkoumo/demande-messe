@@ -25,36 +25,41 @@
         <div class="content">
             <!-- Groupe 1: Type de messe et dates -->
             <div class="form-group">
-                <h2>Nombre de célébrations</h2>
-                <p>Choisis le type de célébration et les dates</p>
+                <h2>Choisissez les dates</h2>
+                <p>Quand est-ce que vous souhaitez que ces intentions soient célébrées ?</p>
 
                 <div class="option-cards">
                     <div class="option-card selected" data-option="une-messe">
                         <div class="option-icon">1</div>
                         <div class="option-title">messe</div>
-                        <div class="option-description">Une messe célébrée à une seule intention</div>
+                        <!-- <div class="option-description">Une messe célébrée à une seule intention</div> -->
                     </div>
 
                     <div class="option-card" data-option="neuvaine">
                         <div class="option-icon">9</div>
                         <div class="option-title">Neuvaine</div>
-                        <div class="option-description">9 messes célébrées sur 9 jours consécutifs</div>
+                        <!-- <div class="option-description">9 messes célébrées sur 9 jours consécutifs</div> -->
                     </div>
 
                     <div class="option-card" data-option="trentaine">
                         <div class="option-icon">30</div>
                         <div class="option-title">Trentaine</div>
-                        <div class="option-description">30 messes célébrées sur 30 jours consécutifs</div>
+                        <!-- <div class="option-description">30 messes célébrées sur 30 jours consécutifs</div> -->
                     </div>
                 </div>
 
                 <div class="date-selection" id="date-selection-une-messe">
-                    <h3>Choisis la date</h3>
-                    <input type="date" class="date-input" id="date-single">
+                    <h2>Choisis la date</h2>
+                    <div class="date-range">
+                        <div>
+                            <label for="date-single">Une messe célébrée à une seule intention</label>
+                            <input type="date" class="date-input" id="date-single">
+                        </div>
+                        </div>
                 </div>
 
                 <div class="date-selection hidden" id="date-selection-neuvaine">
-                    <h3>Choisis la période</h3>
+                    <h2>Choisis la période</h2>
                     <div class="date-range">
                         <div>
                             <label for="date-start-neuvaine">Date de début</label>
@@ -68,7 +73,7 @@
                 </div>
 
                 <div class="date-selection hidden" id="date-selection-trentaine">
-                    <h3>Choisis la période</h3>
+                    <h2>Choisis la période</h2>
                     <div class="date-range">
                         <div>
                             <label for="date-start-trentaine">Date de début</label>
@@ -157,7 +162,7 @@
             const dateSingle = document.getElementById('date-single');
             dateSingle.addEventListener('change', updateNextButton);
 
-            function updateNextButton() {
+            function updateNextButton () {
                 let isValid = false;
 
                 if (selectedOption === 'une-messe') {

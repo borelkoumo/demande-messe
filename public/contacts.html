@@ -13,8 +13,6 @@
     <div class="container">
         <div class="header">
             <h1>Vos coordonnées</h1>
-            <p>Renseigne tes informations de contact</p>
-
             <div class="progress-bar">
                 <div class="progress-step">1</div>
                 <div class="progress-step">2</div>
@@ -27,7 +25,8 @@
         <div class="content">
             <!-- Groupe 3: Informations de contact -->
             <div class="form-group">
-                <h2>Vos informations</h2>
+                <h2>Entrez vos informations</h2>
+                <p>Comment pouvons-nous vous contacter ?</p>
 
                 <form class="contact-form" id="contact-form">
                     <div class="form-row">
@@ -88,7 +87,7 @@
             }
 
             // Valider le formulaire
-            function validateForm() {
+            function validateForm () {
                 const telephone = telephoneInput.value.trim();
                 btnNextContacts.disabled = !telephone;
 

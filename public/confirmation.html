@@ -12,8 +12,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Confirmation de votre demande</h1>
-            <p>Vérifiez les informations de votre demande de messe</p>
+            <h1>Confirmation</h1>
 
             <div class="progress-bar">
                 <div class="progress-step">1</div>
@@ -27,21 +26,21 @@
         <div class="content">
             <!-- Récapitulatif simplifié -->
             <div class="form-group">
-                <h2>Récapitulatif de votre demande</h2>
+                <!-- <h2>Récapitulatif de votre demande</h2> -->
+                <p>Vérifiez les informations de votre demande de messe</p>
+                <div class="summary-notice">
+                    <i class="fas fa-exclamation-circle"></i> Votre demande sera transmise à la paroisse après validation du paiement.
+                </div>
 
                 <div class="confirmation-summary" id="confirmation-summary">
                     <!-- Le récapitulatif sera injecté dynamiquement -->
                 </div>
 
-                <div class="summary-notice">
-                    <i class="fas fa-exclamation-circle"></i> Votre demande sera transmise à la paroisse après
-                    validation du paiement.
-                </div>
             </div>
 
             <div class="action-buttons">
                 <button class="btn btn-secondary" id="btn-back-contacts">
-                    <i class="fas fa-arrow-left"></i> Modifier la demande
+                    <i class="fas fa-arrow-left"></i> Modifier
                 </button>
                 <button class="btn btn-primary" id="btn-pay-now-action">
                     <i class="fas fa-credit-card"></i> Payer maintenant
@@ -67,7 +66,7 @@
                 window.location.href = 'contacts.html';
             });
 
-            function handlePayNow() {
+            function handlePayNow () {
                 // Simuler un paiement réussi
                 alert('Paiement réussi! Votre demande a été transmise à la paroisse.');
                 // Redirection vers une page de remerciement
@@ -79,7 +78,7 @@
                 btnPayNowAction.addEventListener('click', handlePayNow);
             }
 
-            function displaySimplifiedSummary() {
+            function displaySimplifiedSummary () {
                 // Récupérer toutes les données du localStorage
                 const intentionText = localStorage.getItem('intentionText') || "Intention non spécifiée";
                 const selectedCategory = localStorage.getItem('selectedCategory');
@@ -95,7 +94,7 @@
                     <div class="summary-block">
                         <div class="summary-block-header">
                             <i class="fas fa-praying-hands"></i>
-                            <h3>Intention de messe</h3>
+                            <h3>Votre intention</h3>
                         </div>
                         <div class="summary-block-content">
                             <div class="intention-text">${intentionText}</div>
@@ -125,7 +124,7 @@
                     <div class="summary-block">
                         <div class="summary-block-header">
                             <i class="fas fa-calendar-alt"></i>
-                            <h3>Détails pratiques</h3>
+                            <h3>Votre offrande</h3>
                         </div>
                         <div class="summary-block-content">
                 `;
@@ -199,7 +198,7 @@
                             <div class="summary-block">
                                 <div class="summary-block-header">
                                     <i class="fas fa-user"></i>
-                                    <h3>Coordonnées du demandeur</h3>
+                                    <h3>Vos coordonnées</h3>
                                 </div>
                                 <div class="summary-block-content">
                         `;

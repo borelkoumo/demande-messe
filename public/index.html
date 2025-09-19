@@ -7,12 +7,74 @@
     <title>Demande de Messe - Rédaction d'Intention</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="styles.css" />
+    <style>
+        /* Simple styles for the toggle switch */
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+    
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+            margin-bottom: 0;
+        }
+    
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+    
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.2s;
+            border-radius: 999px;
+        }
+    
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.2s;
+            border-radius: 50%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+        }
+    
+        .switch input:checked+.slider {
+            background-color: #22c55e;
+            /* green when ON */
+        }
+    
+        .switch input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+    
+        .toggle-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+    </style>
 </head>
 
 <body>
     <div class="container">
         <div class="header">
-            <h1>Quelle est votre intention de prière ?</h1>
+            <h1>Quelle intention de prière ?</h1>
             <div class="progress-bar">
                 <div class="progress-step active">1</div>
                 <div class="progress-step">2</div>
@@ -25,7 +87,7 @@
         <div class="content">
             <div class="step active" id="step-category">
                 <h2>Choisissez une catégorie</h2>
-                <p>Sélectionnez la catégorie qui correspond le mieux à votre intention</p>
+                <p>Quelle catégorie correspond le mieux à votre intention ?</p>
 
                 <div class="search-container">
                     <i class="fas fa-search search-icon"></i>
@@ -98,9 +160,13 @@
                 </div>
 
                 <div class="input-section">
-                    <div class="input-toggle">
-                        <div class="toggle-option active" id="toggle-ai">Aide à la rédaction (IA)</div>
-                        <div class="toggle-option" id="toggle-manual">Rédiger moi-même</div>
+                    <!-- Accessible toggle switch: ON = Suggestion d'intention (default), OFF = Rédiger moi-même -->
+                    <div class="toggle-switch">
+                        <label class="switch" aria-label="Mode de rédaction">
+                            <input type="checkbox" id="toggle-switch" checked>
+                            <span class="slider"></span>
+                        </label>
+                        <span id="toggle-label" class="toggle-label">Suggestion d'intention (IA)</span>
                     </div>
 
                     <div id="ai-assist-section">
@@ -111,8 +177,8 @@
                                     <i class="fas fa-rotate"></i> Régénérer
                                 </button>
                             </div>
-                            <div class="suggestion-text" id="suggestion-text">Veuillez sélectionner une sous-catégorie
-                                pour générer une suggestion.</div>
+                            <div class="suggestion-text" id="suggestion-text">Veuillez sélectionner une sous-catégorie pour générer une suggestion.
+                            </div>
                         </div>
                     </div>
 
@@ -146,8 +212,8 @@
             const selectedCategoryName = document.getElementById('selected-category-name');
             const finalCategoryName = document.getElementById('final-category-name');
             const subcategoriesContainer = document.getElementById('subcategories-container');
-            const toggleAi = document.getElementById('toggle-ai');
-            const toggleManual = document.getElementById('toggle-manual');
+            const toggleSwitch = document.getElementById('toggle-switch');
+            const toggleLabel = document.getElementById('toggle-label');
             const aiAssistSection = document.getElementById('ai-assist-section');
             const manualInputSection = document.getElementById('manual-input-section');
             const regenerateButton = document.querySelector('.regenerate-btn');
@@ -163,14 +229,31 @@
             let selectedSubcategory = null;
             let toggle = null;
 
-            function initApp() {
+            function isAiMode () {
+                return toggleSwitch ? toggleSwitch.checked : true;
+            }
+
+            function initApp () {
                 setupEventListeners();
+
+                // Initialize toggle from localStorage (default ON = AI suggestions)
+                const savedToggle = localStorage.getItem("toggle");
+                if (savedToggle === "manual") {
+                    if (toggleSwitch) toggleSwitch.checked = false;
+                } else {
+                    if (toggleSwitch) toggleSwitch.checked = true;
+                }
+
+                // Trigger UI update according to toggle state BEFORE restoring steps
+                if (toggleSwitch) {
+                    toggleSwitch.dispatchEvent(new Event('change'));
+                }
+
                 showStep(0);
 
                 const savedCategory = localStorage.getItem('selectedCategory');
                 const savedSubcategory = localStorage.getItem('selectedSubcategory');
                 const savedIntention = localStorage.getItem('intentionText');
-                const toggle = localStorage.getItem("toggle");
 
                 if (savedCategory) {
                     selectCategory(savedCategory);
@@ -179,9 +262,13 @@
                         selectedSubcategory = savedSubcategory;
                         finalCategoryName.textContent = `${categories[savedCategory].name} > ${categories[savedCategory].subcategories[savedSubcategory]}`;
 
+                        // Restore saved intention into both suggestion and manual textarea
                         if (savedIntention) {
                             suggestionText.textContent = savedIntention;
-                            manualTextarea.value = savedIntention;
+                            // Only set manual textarea if user chose manual mode previously
+                            if (savedToggle === 'manual') {
+                                manualTextarea.value = savedIntention;
+                            }
                         }
 
                         showStep(2);
@@ -190,42 +277,38 @@
                     }
                 }
 
-                if (toggle === "manual") {
-                    toggleManual.click();
-                } else {
-                    toggleAi.click();
-                }
-
                 updateStickyButtons();
             }
 
-            function setupEventListeners() {
+            function setupEventListeners () {
                 categoryCards.forEach(card => {
                     card.addEventListener('click', function () {
                         selectCategory(this.dataset.category);
                     });
                 });
 
-                toggleAi.addEventListener('click', function () {
-                    toggleAi.classList.add('active');
-                    toggleManual.classList.remove('active');
-                    aiAssistSection.style.display = 'block';
-                    manualInputSection.style.display = 'none';
-                    localStorage.setItem("toggle", "ai");
-                    updateContinueButton();
-                });
+                // Toggle switch change handler
+                if (toggleSwitch) {
+                    toggleSwitch.addEventListener('change', function () {
+                        if (this.checked) {
+                            aiAssistSection.style.display = 'block';
+                            manualInputSection.style.display = 'none';
+                            localStorage.setItem('toggle', 'ai');
+                        } else {
+                            manualInputSection.style.display = 'block';
+                            aiAssistSection.style.display = 'none';
+                            localStorage.setItem('toggle', 'manual');
+                        }
 
-                toggleManual.addEventListener('click', function () {
-                    toggleManual.classList.add('active');
-                    toggleAi.classList.remove('active');
-                    manualInputSection.style.display = 'block';
-                    aiAssistSection.style.display = 'none';
-                    localStorage.setItem("toggle", "manual");
-                    updateContinueButton();
-                });
+                        updateContinueButton();
+                    });
+                }
 
                 regenerateButton.addEventListener('click', regenerateSuggestion);
                 manualTextarea.addEventListener('input', updateContinueButton);
+                manualTextarea.addEventListener('input', function () {
+                    localStorage.setItem('intentionText', this.value);
+                });
                 searchInput.addEventListener('input', handleSearch);
                 searchInput.addEventListener('focus', handleSearch);
 
@@ -235,7 +318,7 @@
                     } else if (currentStep === 1) {
                         showStep(2);
                     } else if (currentStep === 2) {
-                        localStorage.setItem('intentionText', toggleAi.classList.contains('active') ? suggestionText.textContent : manualTextarea.value);
+                        localStorage.setItem('intentionText', isAiMode() ? suggestionText.textContent : manualTextarea.value);
                         window.location.href = 'dates.html';
                     }
                 });
@@ -249,21 +332,21 @@
                 });
             }
 
-            function showStep(stepIndex) {
+            function showStep (stepIndex) {
                 steps.forEach(step => step.classList.remove('active'));
                 steps[stepIndex].classList.add('active');
                 currentStep = stepIndex;
 
                 if (stepIndex === 1 && selectedCategory) {
                     displaySubcategories();
-                } else if (stepIndex === 2 && selectedSubcategory && toggle === "ai") {
+                } else if (stepIndex === 2 && selectedSubcategory && isAiMode()) {
                     generateSuggestion();
                 }
 
                 updateStickyButtons();
             }
 
-            function selectCategory(categoryId) {
+            function selectCategory (categoryId) {
                 categoryCards.forEach(card => card.classList.remove('selected'));
                 const selectedCard = document.querySelector(`.category-card[data-category="${categoryId}"]`);
                 selectedCard.classList.add('selected');
@@ -276,7 +359,7 @@
                 btnNextSticky.disabled = false;
             }
 
-            function displaySubcategories() {
+            function displaySubcategories () {
                 subcategoriesContainer.innerHTML = '';
 
                 for (const [id, name] of Object.entries(categories[selectedCategory].subcategories)) {
@@ -302,7 +385,7 @@
                 }
             }
 
-            function selectSubcategory(subcategoryId) {
+            function selectSubcategory (subcategoryId) {
                 const subcategoryCards = document.querySelectorAll('.subcategory-card');
                 subcategoryCards.forEach(card => card.classList.remove('selected'));
 
@@ -319,18 +402,22 @@
                 btnNextSticky.disabled = false;
             }
 
-            function generateSuggestion() {
+            function generateSuggestion () {
                 if (selectedSubcategory && suggestions[selectedSubcategory]) {
                     suggestionText.textContent = suggestions[selectedSubcategory];
                 } else {
                     suggestionText.textContent = "Pour l'intention de [précisez], que Dieu accorde ses grâces selon sa volonté divine.";
                 }
 
-                manualTextarea.value = suggestionText.textContent;
+                // Only overwrite manual textarea when in AI mode; do not clobber user-written manual text
+                if (isAiMode()) {
+                    manualTextarea.value = suggestionText.textContent;
+                }
+                
                 updateContinueButton();
             }
 
-            function regenerateSuggestion() {
+            function regenerateSuggestion () {
                 if (selectedSubcategory) {
                     suggestionText.textContent = "Génération en cours...";
 
@@ -340,11 +427,11 @@
                 }
             }
 
-            function updateContinueButton() {
-                btnNextSticky.disabled = !(currentStep === 2 ? (toggleAi.classList.contains('active') ? selectedSubcategory : manualTextarea.value.trim()) : true);
+            function updateContinueButton () {
+                btnNextSticky.disabled = !(currentStep === 2 ? (isAiMode() ? selectedSubcategory : manualTextarea.value.trim()) : true);
             }
 
-            function updateStickyButtons() {
+            function updateStickyButtons () {
                 btnBackSticky.disabled = currentStep === 0;
                 btnBackSticky.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
 
@@ -357,7 +444,7 @@
                 }
             }
 
-            function handleSearch() {
+            function handleSearch () {
                 const query = searchInput.value.toLowerCase().trim();
 
                 if (query.length < 2) {
@@ -373,7 +460,7 @@
                 displaySearchResults(results);
             }
 
-            function displaySearchResults(results) {
+            function displaySearchResults (results) {
                 searchResults.innerHTML = '';
 
                 if (results.length === 0) {

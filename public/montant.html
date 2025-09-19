@@ -13,7 +13,6 @@
     <div class="container">
         <div class="header">
             <h1>Combien veux-tu offrir ?</h1>
-            <p>Choisis le montant de ton offrande</p>
 
             <div class="progress-bar">
                 <div class="progress-step">1</div>
@@ -27,9 +26,10 @@
         <div class="content">
             <!-- Groupe 2: Montant de l'offrande -->
             <div class="form-group">
-                <h2>Montant de l'offrande</h2>
+                <h2>Choisissez l'offrande</h2>
+                <p>Combien souhaitez-vous dépenser comme offrande ?</p>
 
-                <div id="amount-options-container">
+<div id="amount-options-container" class="amount-options">
                     <!-- Les options de montant seront injectées dynamiquement -->
                 </div>
 
@@ -65,6 +65,7 @@
             let selectedAmount = null;
 
             // Options de montant par type de messe
+            const minAmount = 2000
             const amountOptions = {
                 "une-messe": [
                     { value: 2000, label: "2.000 FCFA" },
@@ -81,10 +82,34 @@
                     { value: "custom", label: "Autre montant" }
                 ],
                 "trentaine": [
-                    { value: 120000, label: "120.000 FCFA" },
+                    { value: 60000, label: "60.000 FCFA" },
+                    { value: 90000, label: "90.000 FCFA" },
+                    { value: 150000, label: "150.000 FCFA" },
                     { value: "custom", label: "Autre montant" }
                 ]
             };
+            Object.entries(amountOptions).map(([k, v]) => {
+                if (k === "neuvaine" || k === "trentaine") {
+                    v.forEach((entry) => {
+                        switch (k) {
+                            case "neuvaine":
+                                if (entry.value != "custom") {
+                                    entry.label = `9jrs x ${entry.value / 9}`
+                                }
+                                break;
+                            case "trentaine":
+                                if (entry.value != "custom") {
+                                    entry.label = `30jrs x ${entry.value / 30}`
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+
+                    })
+                }
+            })
 
             // Charger les données sauvegardées
             const savedDates = localStorage.getItem('messeDates');
@@ -100,7 +125,14 @@
                     const amountData = JSON.parse(savedAmount);
 
                     if (amountData.type === 'fixed') {
-                        selectAmountOption(amountData.value);
+                        // Try to find the matching option element and click it so event handlers run
+                        const matching = Array.from(document.querySelectorAll('.amount-option')).find(el => el.dataset.value == amountData.value);
+                        if (matching) {
+                            matching.click();
+                        } else {
+                        // fallback: call selection function directly
+                            selectAmountOption(amountData.value);
+                        }
                     } else if (amountData.type === 'custom') {
                         selectCustomAmount(amountData.value);
                     }
@@ -110,7 +142,7 @@
                 window.location.href = 'dates.html';
             }
 
-            function displayAmountOptions(messeType) {
+            function displayAmountOptions (messeType) {
                 amountOptionsContainer.innerHTML = '';
 
                 if (amountOptions[messeType]) {
@@ -137,7 +169,7 @@
                 }
             }
 
-            function selectAmountOption(value) {
+            function selectAmountOption (value) {
                 // Désélectionner toutes les options
                 document.querySelectorAll('.amount-option').forEach(option => {
                     option.classList.remove('selected');
@@ -160,7 +192,7 @@
                 btnNextAmount.disabled = false;
             }
 
-            function selectCustomAmount(value = null) {
+            function selectCustomAmount (value = null) {
                 // Désélectionner toutes les options
                 document.querySelectorAll('.amount-option').forEach(option => {
                     option.classList.remove('selected');
@@ -187,7 +219,7 @@
                 validateCustomAmount();
             }
 
-            function validateCustomAmount() {
+            function validateCustomAmount () {
                 const value = parseInt(customAmountInput.value);
 
                 if (isNaN(value) || value < 2000) {
