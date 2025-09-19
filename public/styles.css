@@ -807,9 +807,6 @@ label {
         grid-template-columns: 1fr;
     }
 
-                                                                                                                                                                                                                                                                /* .amount-options {
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    grid-template-columns: repeat(3, 1fr);
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                } */
     .payment-options {
         grid-template-columns: 1fr;
     }
@@ -823,13 +820,12 @@ label {
     }
 
     .btn {
-        padding: 10px 16px;
+        padding: 16px 20px;
         font-size: 0.9rem;
     }
 }
 
 @media (max-width: 480px) {
-
     .categories-grid,
     .subcategories-grid {
         grid-template-columns: repeat(2, 1fr);
@@ -851,16 +847,13 @@ label {
     }
 
     .btn {
-        padding: 10px 16px;
+        padding: 16px 20px;
     }
-.summary-notice {
-    margin: 20px 0
-}
-}
+    
+    .summary-notice {
+        margin: 20px 0;
+    }
 
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
     .detail-item {
         flex-direction: column;
         gap: 4px;
