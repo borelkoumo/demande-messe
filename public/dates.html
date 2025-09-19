@@ -91,7 +91,7 @@
                 <button class="btn btn-secondary" onclick="window.location.href='index.html'">
                     <i class="fas fa-arrow-left"></i> Retour
                 </button>
-                <button class="btn btn-primary" id="btn-next-dates">
+                <button class="btn btn-primary" id="btn-next-dates" disabled>
                     Suivant <i class="fas fa-arrow-right"></i>
                 </button>
             </div>
@@ -197,8 +197,9 @@
             if (savedDates) {
                 const datesData = JSON.parse(savedDates);
 
-                // Sélectionner l'option sauvegardée
-                document.querySelector(`.option-card[data-option="${datesData.type}"]`).click();
+                // Sélectionner l'option sauvegardée (this triggers UI show of the right date-selection)
+                const opt = document.querySelector(`.option-card[data-option="${datesData.type}"]`);
+                if (opt) opt.click();
 
                 // Remplir les champs de date
                 if (datesData.type === 'une-messe' && datesData.dateSingle) {
@@ -214,6 +215,9 @@
                     const event = new Event('change');
                     dateStartTrentaine.dispatchEvent(event);
                 }
+
+                // After restoring values, ensure the Next button state is updated
+                updateNextButton();
             }
         });
     </script>

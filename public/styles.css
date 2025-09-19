@@ -800,7 +800,7 @@ label {
         }
         
         .option-icon {
-            margin-bottom: 12px;
+            margin-bottom: 0px;
         }
 
     .date-range {
@@ -853,6 +853,9 @@ label {
     .btn {
         padding: 10px 16px;
     }
+.summary-notice {
+    margin: 20px 0
+}
 }
 
 
