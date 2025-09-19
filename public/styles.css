@@ -99,6 +99,10 @@ body {
     display: none;
 }
 
+.step h2 {
+    font-size: 1.4rem;
+    color: var(--dark);
+}
 .step.active {
     display: block;
     animation: fadeIn 0.5s ease;
@@ -106,10 +110,10 @@ body {
 
 @keyframes fadeIn {
     from {
-            opacity: 0;
+        opacity: 0;
             transform: translateY(10px);
         }
-    
+        
         to {
             opacity: 1;
             transform: translateY(0);
@@ -380,7 +384,7 @@ textarea:focus {
 .option-cards {
     display: grid;
     margin: 20px 0;
-        grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -394,7 +398,7 @@ textarea:focus {
     cursor: pointer;
     transition: var(--transition);
     display: flex;
-        justify-content: space-between;
+    justify-content: space-between;
         flex-direction: column;
         align-items: center;
 }
@@ -418,7 +422,7 @@ textarea:focus {
 }
 
 .option-title {
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 8px;
 }
@@ -430,7 +434,7 @@ textarea:focus {
 
 .date-selection {
     /* margin-top: 20px; */
-        /* padding: 20px; */
+    /* padding: 20px; */
     background: #f8f9fa;
     border-radius: 8px;
 }
@@ -578,7 +582,7 @@ label {
     background: #f8f9fa;
     border-radius: 8px;
     /* padding: 20px; */
-        margin: 20px 0;
+    margin: 20px 0;
 }
 
 .summary-item {
@@ -754,7 +758,7 @@ label {
     display: flex;
     flex-direction: column;
     min-height: calc(100vh - 200px);
-        /* Ajuster selon la hauteur de votre header */
+    /* Ajuster selon la hauteur de votre header */
         padding-bottom: 80px;
         /* Espace pour les boutons sticky */
     position: relative;
@@ -788,14 +792,22 @@ label {
     }
 
     .option-cards {
-        grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
-    }
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        }
+        
+        .option-card {
+            padding: 10px;
+        }
+        
+        .option-icon {
+            margin-bottom: 12px;
+        }
 
     .date-range {
         grid-template-columns: 1fr;
     }
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                /* .amount-options {
+                                                                                                                                                                                                                                                                /* .amount-options {
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     grid-template-columns: repeat(3, 1fr);
                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 } */
     .payment-options {
